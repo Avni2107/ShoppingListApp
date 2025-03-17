@@ -1,14 +1,12 @@
-
-
 import UIKit
 
 class ShoppingListViewController: UITableViewController {
     
-    var shoppingList: [ShoppingItem] = []
-    var categorizedShoppingList: [String: [ShoppingItem]] = [:]
+    private var shoppingList: [ShoppingItem] = []
+    private var categorizedShoppingList: [String: [ShoppingItem]] = [:]
     
     // Define category colors and icons
-    let categoryColors: [String: UIColor] = [
+    private let categoryColors: [String: UIColor] = [
         "Groceries": .systemGreen,
         "Electronics": .systemBlue,
         "Clothing": .systemPurple,
@@ -16,7 +14,7 @@ class ShoppingListViewController: UITableViewController {
         "Others": .systemGray
     ]
     
-    let categoryIcons: [String: String] = [
+    private let categoryIcons: [String: String] = [
         "Groceries": "cart.fill",
         "Electronics": "tv.fill",
         "Clothing": "tshirt.fill",
@@ -26,13 +24,12 @@ class ShoppingListViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "🛒 My Shopping List"
+        title = "🛒 Shopping List"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewItem))
-        
         categorizeItems()
     }
     
-    @objc func addNewItem() {
+    @objc private func addNewItem() {
         performSegue(withIdentifier: "showAddItem", sender: nil)
     }
     
@@ -44,7 +41,7 @@ class ShoppingListViewController: UITableViewController {
     }
     
     // MARK: - Categorizing Items
-    func categorizeItems() {
+    private func categorizeItems() {
         categorizedShoppingList.removeAll()
         
         for item in shoppingList {
@@ -102,17 +99,18 @@ class ShoppingListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "ShoppingItemCell", for: indexPath)
-    
-            let category = Array(categorizedShoppingList.keys)[indexPath.section]
-            if let items = categorizedShoppingList[category] {
-                let item = items[indexPath.row]
-                cell.textLabel?.text = item.name
-                cell.accessoryType = item.isPurchased ? .checkmark : .none
-            }
-    
-            return cell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ShoppingItemCell", for: indexPath)
+
+        let category = Array(categorizedShoppingList.keys)[indexPath.section]
+        if let items = categorizedShoppingList[category] {
+            let item = items[indexPath.row]
+            cell.textLabel?.text = item.name
+            cell.accessoryType = item.isPurchased ? .checkmark : .none
         }
+        
+        return cell
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let category = Array(categorizedShoppingList.keys)[indexPath.section]
         if var items = categorizedShoppingList[category] {
@@ -126,7 +124,7 @@ class ShoppingListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
-
+    
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let category = Array(categorizedShoppingList.keys)[indexPath.section]
@@ -143,4 +141,3 @@ extension ShoppingListViewController: AddItemViewControllerDelegate {
         categorizeItems()
     }
 }
-
